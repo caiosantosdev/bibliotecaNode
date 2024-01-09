@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node ./src/cli.js ./arquivos",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cli": "node ./src/cli.js ./arquivos",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clivalida": "node ./src/cli.js ./arquivos/texto.md --valida"
   },
   "author": "",
   "license": "ISC",

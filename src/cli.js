@@ -1,16 +1,27 @@
 import pegaArquivo from './index.js';
 import chalk from 'chalk';
 import fs from 'fs';
+import validatedList from './http-validacao.js';
 
 const path = process.argv;
 
-function listPrint(result, archiveName){
-    console.log(chalk.yellow(`${archiveName} - lista de links:`), result);
+async function listPrint(valida, result, archiveName){
+    if(valida){
+        console.log(chalk.yellow(`${archiveName} - lista de links:`), await validatedList(result));
+    }
+    else{
+        console.log(
+            chalk.yellow("Lista de links:"),
+            chalk.black.bgGreen(archiveName),
+            result);
+    }
 }
 // pegaArquivo(path[2]);
 
 async function textProcessor(args){
     let path = args[2];
+    const validation = args[3] === '--valida';
+
     try{
         fs.lstatSync(path);
     }catch(erro){
@@ -21,7 +32,7 @@ async function textProcessor(args){
     }
     if(fs.lstatSync(path).isFile()){
         const result = await pegaArquivo(path);
-        listPrint(result);
+        listPrint(validation, result, path);
     }
     // percorre um diretorio pegando cada arquivo e lendo ele com a funcao pegaArquivo.
     else if(fs.lstatSync(path).isDirectory()){
@@ -29,7 +40,7 @@ async function textProcessor(args){
         //forEach para percorrer a lista de arquivos.
         archives.forEach(async (archiveName) => {
             const currentLinkedArchive = await pegaArquivo(`${path}/${archiveName}`);
-            listPrint(currentLinkedArchive, archiveName);
+            listPrint(validation, currentLinkedArchive, archiveName);
         });
     }
 }
